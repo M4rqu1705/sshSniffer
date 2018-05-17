@@ -1,7 +1,9 @@
-from socket import socket, AF_INET, SOCK_RAW, IPPROTO_TCP, inet_ntoa, htons, AF_PACKET
+#!/usr/bin/env python
+from socket import socket, AF_INET, SOCK_RAW, IPPROTO_TCP, inet_ntoa, htons, PF_PACKET
 from struct import *
 from binascii import hexlify as readHex
 import sys
+import time
 
 def receivePacket(netSocket):
 
@@ -63,31 +65,56 @@ def receivePacket(netSocket):
 
     return PCAP
 
-#Create socket object
-netSocket = socket(AF_INET, SOCK_RAW, htons(0x0800))
+def printPacketInfo(PCAP, packetNumber):
+    print "=" * 30 + "Packet Captured Number %s" % (packetNumber) + "=" * 30 + "\n"
+    print "[*] Source MAC: %s -> Destination MAC: %s" % (PCAP["Source Ethernet Address"], PCAP["Destination Ethernet Address"])
+    print "[*] Protocol: %s" % (PCAP["Protocol"])
+    print "[*] Source IP: %s:%s -> Destination IP: %s:%s" % (PCAP["Source IP Address"], PCAP["Source Port"], PCAP["Destination IP Address"], PCAP["Destination Port"])
+    print "[*] Seq. Number: %s \t Ack Number: %s \tFlag: %s" % ( PCAP["SEQ"], PCAP["ACK"], PCAP["flag"])
+    print "\n"
 
-#Packet counter
-ctr = 1
+
+#Create socket object
+netSocket = socket(PF_PACKET, SOCK_RAW, htons(0x0800))
+
+#Packet counters and time of increment
+previousPacketCounter = [0, 0]
+currentPacketCounter = [0, 0]
+
+#Warning counter and consecutive warning counter
+warningsCounter, consecutiveWarningsCounter = 0, 0
+
+#Amount of time between requests. If it is below this number, request is interpreted as automatic login attempt and a warning is printed
+timeThreshold = 4
 
 #Receive packets for unlimited amount of time
 while True:
-
     try:
         PCAP = receivePacket(netSocket)
 
-        #Make sure PCAP is TCP, has port 22 as destination (SSH only) and the flag is SYN
+        #Make sure PCAP is TCP, has port 22 as destination (We wish to caputre ssh packets) and the flag is SYN (there is an attempt to capture the packet)
         #Short circuit (alternative to nested ifs)
         if PCAP.has_key("flag") and PCAP["Destination Port"] == 22 and PCAP["flag"] == "SYN":
-            print "=" * 30 + "Packet Captured No. %s" % (ctr) + "=" * 30 + "\n"
-            print "[*] Src. MAC: %s -> Dest. MAC: %s" % (PCAP["Source Ethernet Address"], PCAP["Destination Ethernet Address"])
-            print "[*] Protocol: %s" % (PCAP["Protocol"])
-            print "[*] Src IP: %s:%s -> Dest. IP: %s:%s" % (PCAP["Source IP Address"], PCAP["Source Port"], PCAP["Destination IP Address"], PCAP["Destination Port"])
-            print "[*] Seq. Number: %s \t Ack Number: %s \tFlag: %s" % ( PCAP["SEQ"], PCAP["ACK"], PCAP["flag"])
-            print "[*] Data/Payload:"
-            print "     %s" % (PCAP["Data"])
-            print "\n"
-            ctr +=1
-    except KeyboardInterrupt:
-        print "Bye ... You interrupted me ... You S"
-        sys.exit()
 
+            #Make a copy of the current list before we change it to save it as previousPacketCounter
+            previousPacketCounter = currentPacketCounter[:]
+            #Increase counter (first value of the list) and update time packet was received (second value of the list)
+            currentPacketCounter[0] +=1
+            currentPacketCounter[1] = time.time()
+
+
+            #Print packet information to the terminal
+            printPacketInfo(PCAP, currentPacketCounter[0])
+
+            #Determine if warning should be rised if time interval between SYN is less than 4 seconds 
+            if currentPacketCounter[1] - previousPacketCounter[1] < timeThreshold:
+                print '[!] Login attempt was made too little time ago'
+                warningsCounter += 1
+                consecutiveWarningsCounter += 1
+            else:
+                #Reset the consecutive warning counter because a "Normal" request has been made
+                consecutiveWarningsCounter = 0
+
+    except KeyboardInterrupt:
+        print "Terminated program"
+        sys.exit()
