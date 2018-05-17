@@ -85,7 +85,7 @@ currentPacketCounter = [0, 0]
 warningsCounter, consecutiveWarningsCounter = 0, 0
 
 #Amount of time between requests. If it is below this number, request is interpreted as automatic login attempt and a warning is printed
-timeThreshold = 4
+timeThreshold = 5 
 
 #Receive packets for unlimited amount of time
 while True:
