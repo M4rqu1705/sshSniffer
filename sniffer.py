@@ -87,6 +87,12 @@ warningsCounter, consecutiveWarningsCounter = 0, 0
 #Amount of time between requests. If it is below this number, request is interpreted as automatic login attempt and a warning is printed
 timeThreshold = 5 
 
+#Amount of consecutive warnings needed to raise an alert
+consecutiveWarningsLimit = -1
+
+#Dictionary to collect the IP addresses of the attackers
+loginAttempts = {}
+
 #Receive packets for unlimited amount of time
 while True:
     try:
@@ -106,15 +112,28 @@ while True:
             #Print packet information to the terminal
             printPacketInfo(PCAP, currentPacketCounter[0])
 
+
             #Determine if warning should be rised if time interval between SYN is less than 4 seconds 
             if currentPacketCounter[1] - previousPacketCounter[1] < timeThreshold:
                 print '[!] Login attempt was made too little time ago'
                 warningsCounter += 1
                 consecutiveWarningsCounter += 1
+                if consecutiveWarningsCounter > consecutiveWarningsLimit:
+                    print "*" * 30 + str(consecutiveWarningsCounter) + " warnings " + "*" * 30
             else:
                 #Reset the consecutive warning counter because a "Normal" request has been made
                 consecutiveWarningsCounter = 0
 
+            #Record IP addresses
+            if len(loginAttempts) < 100:
+                if loginAttempts.has_key(PCAP["Source IP Address"]):
+                    loginAttempts[PCAP["Source IP Address"]] += 1
+                else:
+                    loginAttempts[PCAP["Source IP Address"]] = 1
+
     except KeyboardInterrupt:
         print "Terminated program"
+        print "[*] Total amount of warnings:", warningsCounter, "\n[*] Consecutive warnings:", consecutiveWarningsCounter
+        for key, value in loginAttempts.iteritems():
+            print "[*] " + str(key) + " -> " + str(value)
         sys.exit()
