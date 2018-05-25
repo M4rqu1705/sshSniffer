@@ -85,10 +85,10 @@ currentPacketCounter = [0, 0]
 warningsCounter, consecutiveWarningsCounter = 0, 0
 
 #Amount of time between requests. If it is below this number, request is interpreted as automatic login attempt and a warning is printed
-timeThreshold = 5 
+timeThreshold = 4 
 
 #Amount of consecutive warnings needed to raise an alert
-consecutiveWarningsLimit = -1
+consecutiveWarningsLimit = 0
 
 #Dictionary to collect the IP addresses of the attackers
 loginAttempts = {}
@@ -108,9 +108,10 @@ while True:
             currentPacketCounter[0] +=1
             currentPacketCounter[1] = time.time()
 
+            #Print relevant packet information
+            print '='*30 + ' Packet No. ' + currentPacketCounter[0] + ' ' + '='*30
+            print '\n[*] Source:  %s:%s -> Destination: %s:%s' % (PCAP["Source IP"] , PCAP["Source Port"], PCAP["Destination IP"], PCAP["Destination Port"]
 
-            #Print packet information to the terminal
-            printPacketInfo(PCAP, currentPacketCounter[0])
 
 
             #Determine if warning should be rised if time interval between SYN is less than 4 seconds 
@@ -119,7 +120,7 @@ while True:
                 warningsCounter += 1
                 consecutiveWarningsCounter += 1
                 if consecutiveWarningsCounter > consecutiveWarningsLimit:
-                    print "*" * 30 + str(consecutiveWarningsCounter) + " warnings " + "*" * 30
+                    print "*" * 30 + str(consecutiveWarningsCounter) + " consecutive warnings " + "*" * 30
             else:
                 #Reset the consecutive warning counter because a "Normal" request has been made
                 consecutiveWarningsCounter = 0

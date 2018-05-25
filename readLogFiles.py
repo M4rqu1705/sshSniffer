@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 #Dictionary to store IP addresses and the amount of login attempts they made
 loginAttempts = {}
 
