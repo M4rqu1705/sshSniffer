@@ -12,11 +12,11 @@ import sys
 import time
 
 def receivePacket(netSocket):
-'''
-Declare and define function receive packet, which takes a
-socket object instance as a parameter and returns a dictionary
-with collected data from packet
-'''
+    '''
+    Declare and define function receive packet, which takes a
+    socket object instance as a parameter and returns a dictionary
+    with collected data from packet
+    '''
 
     #Declare and initialize dictionary to store the captured packet
     PCAP = {}
@@ -116,7 +116,7 @@ def main():
     warningsCounter, consecutiveWarningsCounter = 0, 0
 
     #Amount of time between requests. If it is below this number, request is interpreted as automatic login attempt and a warning is printed
-    timeThreshold = 3 
+    timeThreshold = 4 
 
     #Amount of consecutive warnings needed to raise an alert
     consecutiveWarningsLimit = 0
@@ -140,18 +140,18 @@ def main():
                 currentPacketCounter[1] = time.time()
 
                 #Print minimal relevant packet information
-                print '='*30 + ' Packet No. ' + currentPacketCounter[0] + ' ' + '='*30
-                print '\n[*] Source:  %s:%s -> Destination: %s:%s' % (PCAP["Source IP"] , PCAP["Source Port"], PCAP["Destination IP"], PCAP["Destination Port"]
+                print '='*30 + ' Packet No. ' + str(currentPacketCounter[0]) + ' ' + '='*30
+                print '\n[*] Source:  %s:%s -> Destination: %s:%s\n' % (PCAP["Source IP Address"] , PCAP["Source Port"], PCAP["Destination IP Address"], PCAP["Destination Port"])
 
 
 
                 #Determine if warning should be rised if time interval between SYN is less than 4 seconds 
-                if currentPacketCounter[1] - previousPacketCounter[1] < timeThreshold:
+                if (currentPacketCounter[1] - previousPacketCounter[1] < timeThreshold):
                     print '[!] Login attempt was made too little time ago'
                     warningsCounter += 1
                     consecutiveWarningsCounter += 1
                     if consecutiveWarningsCounter > consecutiveWarningsLimit:
-                        print "*" * 30 + str(consecutiveWarningsCounter) + " consecutive warnings " + "*" * 30
+                        print "*" * consecutiveWarningsCounter + str(consecutiveWarningsCounter) + " consecutive warnings " + "*" * consecutiveWarningsCounter + "\n"*2
                 else:
                     #Reset the consecutive warning counter because a "Normal" request has been made
                     consecutiveWarningsCounter = 0
